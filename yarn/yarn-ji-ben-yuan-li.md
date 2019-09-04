@@ -23,10 +23,10 @@ MRv1是由三部分组成：编程模型（新旧API组成）、数据处理引�
 
 ![](/assets/yarn整体架构.JPG)
 
-* ResourceManager：包含资源调度器和应用程序管理器，调度器管理整个集群的资源，根据每个程序的需求根据一定的算法，将资源封装成container
-* NodeManager：
-* AppMaster（各类型）：
-* Container：
+* ResourceManager：包含资源调度器和应用程序管理器，调度器管理整个集群的资源，根据每个程序的需求根据一定的算法，将资源封装成container分配给AppMaster；而应用程序管理器负责监控各个AppMaster、接受任务提交、与RM申请资源启动AppMaster。
+* NodeManager：向RM进行心跳汇报节点健康状况以及该节点上的container运行情况、接受AM的运行与停止任务的请求。
+* AppMaster（各类型）：与RM进行通信申请资源、把申请来的资源进一步分配给各个子任务、与NM通信要求启动/停止任务、监控所有运行的任务，如果失败负责重新启动。
+* Container：这是资源的一种抽象，包括CPU和内存两个维度；yarn会为每个任务分配一个container。
 
 ### 各组件之间的通信协议
 
