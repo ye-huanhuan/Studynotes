@@ -69,5 +69,23 @@ Reduce Task出现GC超限，报出OOM，如图所示
 
 ### 解决方案：
 
+---
+
+## NodeManager进程被杀掉
+
+### 问题描述：
+
+NodeManager突然掉线，并且日志中没有出现错误，知识ResourceManager日志中出现重连NM次数达到上限，如图所示。![](/assets/进程突然被杀.jpg)NM日志![](/assets/RM连接不上NM.jpg)RM日志
+
+### 问题原因：
+
+由于NM日志上显示container都正常运行，突然没有了任何日志记录，而RM尝试重连NM失败，说明很有可能是NM进程突然掉了；可能被人为kill -9 了，也有可能是系统把该进程kill了。
+
+### 解决方案：
+
+重新启动nodemanager进程，命令：yarn-daemon.sh start nodemanager。
+
+注意：已经在集群上面运行的sparkstreaming任务，将不会分配到这个新加入的NM的资源。
+
 
 
