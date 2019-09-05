@@ -30,7 +30,30 @@ MRv1是由三部分组成：编程模型（新旧API组成）、数据处理引�
 
 ### 各组件之间的通信协议
 
-# 
+在yarn中各个组件之间的通信使用的是RPC协议，而任何两个需要通信的组件之间仅有一个RPC协议，而对于通信双方来说，有一个client和一个server，总是client向server发送请求，server应答这种模式（pull模式）。yarn中主要的RPC协议有以下五个。
+
+* ApplicationClientProtocol：该协议用于JobClient（作业提交客户端）与RM之间的通信，JobClient可以通过该协议提交作业，查询作业运行状况等。
+* ResourceManagerAdministrationProtocol：该协议用于Admin与RM之间的通信，系统管理员可以通过该协议更新系统配置，比如节点黑白名单、用户队列权限等。
+* ApplicationMasterProtocol：该协议用于AM与RM之间的通信，AM向RM注册和注销自己，并且为任务向RM申请资源。
+* ContainerManagementProtocol：该协议用于AM与NM之间的通信，AM通过该协议要求NM启动或者停止container，获取各个container的运行状况。
+* ResourceTracker：该协议用于NM与RM之间的通信，NM向RM注册或者注销自己，并且汇报自己节点上的资源使用情况和Container运行状况。
+
+![](/assets/yarn的RPC协议.JPG)
+
+### yarn的工作流程
+
+当用户向RM提交了一个应用程序后，yarn将分两个阶段运行该应用程序；第一阶段是向RM申请资源，然后在分配的NodeManager上启动AppMaster，之后再有AppMaster为具体的任务申请资源，然后要求NM启动任务，并且监控该任务的运行状况，直到完成。
+
+1. 用户向Yarn提交应用程序，包括AppMaster程序、启动AppMaster的命令、应用程序等。
+2. RM为该应用程序申请第一个container，然后和对应的NM通信，要求NM在这个container中启动AppMaster。
+3. AM启动之后向RM进行注册自己，这样用户就可以通过RM查看任务的运行状况，然后为各个任务申请资源，并监控各个任务，直到任务结束。重复4-7
+4. AM采用轮询的方式向RM申请资源，并领取资源。
+5. 一旦AM申请到资源之后，便于NM进行通信，要求NM启动任务。
+6. NM为任务设置好运行环境（jar包、环境变量等），将任务启动命令写到一个脚本中，并通过该脚本启动任务。
+7. 各个任务通过RPC协议向AM汇报自己的运行状况和进度，以便AM随时掌握自己的运行状况，当出错时重启任务。
+8. 运行完成之后AM向RM注销自己。
+
+![](/assets/yarn工作流程.JPG)
 
 
 
