@@ -12,4 +12,5 @@
 ## Yarn线上常见问题
 
 * [常见问题](yarnxian-shang-chang-jian-wen-ti/chang-jian-wen-ti.md)
+* [日常记录](yarnxian-shang-chang-jian-wen-ti/ri-chang-wen-ti.md)
 
