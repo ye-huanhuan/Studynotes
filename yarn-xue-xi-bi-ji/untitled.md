@@ -1,14 +1,8 @@
-# yarn的调度器原理
+# Yarn调度器
 
 ## Fair Sheduler
 
 ### 概述
 
 ### Fair Share
-
-
-
-
-
-
 
